@@ -1,0 +1,14 @@
+diffusion_prior:
+  dim: 1024
+  depth: 20
+  num_timestep: 50
+  dim: 64
+  heads: 16
+  mult: 8
+  attn_out: true
+  cross_dropout: 0.001
+  dropout: 0.001
+  obj: true
+  normformer: true
+  emb: true
+

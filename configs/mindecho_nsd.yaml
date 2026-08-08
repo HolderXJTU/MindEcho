@@ -1,0 +1,74 @@
+project:
+  name: MindEcho
+  output_dir: outputs
+  checkpoint_dir: checkpoints
+  seed: 42
+
+data:
+  dataset: nsd
+  train_file: data/nsd_train.pt
+  val_file: data/nsd_val.pt
+  image_size: 512
+  struct_size: 64
+  num_workers: 8
+
+subjects:
+  ids: [1, 2, 5, 7]
+  voxel_dims:
+    "1": 40000
+    "2": 40000
+    "5": 40000
+    "7": 40000
+
+model:
+  shared_dim: 4096
+  latent_channels: 256
+  latent_hw: 4
+  clip_dim: 768
+  semantic_hidden: 2048
+  structural_channels: 64
+  structural_out_channels: 1
+  dropout: 0.1
+
+cpd:
+  perturb_prob: 0.75
+  omega_min: 0.1
+  omega_max: 0.6
+  use_batch_shuffle: true
+
+retrieval:
+  memory_file: memory/memory_clip.pt
+  top_k: 16
+  eta: 0.7
+  tau: 0.07
+  mu_init: 12.0
+  delta_init: 0.25
+  gamma_init: 10.0
+  beta_init: 0.3
+
+stage1:
+  epochs: 50
+  batch_size: 64
+  lr: 0.0001
+  weight_decay: 0.01
+  temperature: 0.07
+  lambda_img: 1.0
+  lambda_txt: 0.5
+  lambda_sem: 1.0
+  lambda_struct: 10.0
+  lambda_causal: 1.0
+  amp: true
+  log_interval: 20
+  save_interval: 5
+
+stage2:
+  epochs: 25
+  batch_size: 32
+  lr: 0.00005
+  weight_decay: 0.01
+  amp: true
+  freeze_cpd: true
+
+eval:
+  retrieval_topk: [1, 5, 10]
+  normalize_features: true
